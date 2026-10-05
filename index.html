@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123b37">
+  <title>天線寶寶大冒險 | Moss &amp; Spark</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="masthead">
+      <a class="wordmark" href="#game" aria-label="跑酷大冒險首頁">
+        <span class="wordmark-mark" aria-hidden="true">✦</span>
+        <span>MOSS <i>&amp;</i> SPARK</span>
+      </a>
+      <p class="edition">無盡旅程 <span>／</span> 第 01 卷</p>
+    </header>
+
+    <section class="game-section" id="game" aria-labelledby="game-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">THE LITTLE RUNNER</p>
+          <h1 id="game-title">天線寶寶大冒險<span class="title-star" aria-hidden="true">✳</span></h1>
+        </div>
+        <p class="section-note">越過峽谷，收集沿途的星幣。</p>
+      </div>
+
+      <div class="game-frame">
+        <div class="game-hud" aria-label="遊戲狀態">
+          <div class="hud-chip"><span class="hud-label">SCORE</span><strong id="score-value">00000</strong></div>
+          <div class="hud-chip coin-chip"><span class="coin-symbol" aria-hidden="true">✦</span><span class="hud-label">金幣</span><strong id="coin-value">0</strong></div>
+          <div class="hud-chip best-chip"><span class="hud-label">BEST</span><strong id="best-value">00000</strong></div>
+        </div>
+
+        <canvas id="game-canvas" width="960" height="540" aria-label="跑酷遊戲畫面。按空白鍵、向上鍵或點擊畫面跳躍。">
+          你的瀏覽器不支援 Canvas，請改用較新的瀏覽器開啟。
+        </canvas>
+
+        <div class="game-overlay" id="game-overlay">
+          <div class="overlay-content" id="overlay-content">
+            <p class="overlay-kicker" id="overlay-kicker">準備好出發了嗎？</p>
+            <h2 id="overlay-title">天線寶寶大冒險</h2>
+            <p class="overlay-copy" id="overlay-copy">按 SPACE 開始遊戲</p>
+            <button class="action-button" id="action-button" type="button">
+              <span class="button-icon" aria-hidden="true">▶</span>
+              <span id="button-label">開始冒險</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-foot">
+        <p class="control-hint"><kbd>SPACE</kbd><kbd>↑</kbd><span>跳躍，空中再按可二連跳</span><span class="hint-divider">·</span><span>點擊畫面也能跳</span></p>
+        <div class="power-status" aria-label="道具狀態">
+          <span id="magnet-status">磁鐵 · 未啟用</span>
+          <span id="shield-status">護盾 · 未持有</span>
+        </div>
+        <p class="world-label"><span class="live-dot" aria-hidden="true"></span> 苔光山谷 <span>／</span> 無盡模式</p>
+      </div>
+      <p class="sr-only" id="announcer" aria-live="polite"></p>
+    </section>
+
+    <footer class="page-footer">
+      <span>KEEP MOVING, LITTLE SPARK.</span>
+      <span>一段沒有終點的旅程</span>
+    </footer>
+  </main>
+</body>
+</html>
