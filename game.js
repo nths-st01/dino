@@ -21,7 +21,18 @@
   const shieldStatus = document.querySelector("#shield-status");
   const announcer = document.querySelector("#announcer");
 
-  const player = { x: PLAYER_X, y: GROUND_Y - 58, width: 48, height: 58, velocityY: 0, grounded: true, jumpCount: 0, runTime: 0 };
+  const player = { x: PLAYER_X, y: GROUND_Y - 58, width: 56, height: 58, velocityY: 0, grounded: true, jumpCount: 0, runTime: 0 };
+  const playerSpriteFrames = Array.from({ length: 4 }, (_, index) => {
+    const sprite = new Image();
+    sprite.src = `pica-frame-${index}.png`;
+    return sprite;
+  });
+  const jumpSprite = new Image();
+  jumpSprite.src = "jump_01.png";
+  const fallingSprite = new Image();
+  fallingSprite.src = "jump_02.png";
+  const deathSprite = new Image();
+  deathSprite.src = "death_01.png";
   let obstacles = [];
   let coins = [];
   let powerUps = [];
@@ -491,57 +502,74 @@
       context.shadowBlur = 0;
       context.globalAlpha = 1;
     }
-    context.fillStyle = "#173c37";
-    context.beginPath();
-    context.ellipse(24, 57, 23, 4, 0, 0, Math.PI * 2);
-    context.fill();
 
-    context.fillStyle = "#ff795e";
-    context.beginPath();
-    context.roundRect(3, 8, 43, 43, 13);
-    context.fill();
-    context.fillStyle = "#e5ac93";
-    context.beginPath();
-    context.roundRect(8, 3, 34, 44, 13);
-    context.fill();
+    let sprite = null;
+    if (state === "over") {
+      sprite = deathSprite;
+    } else if (!player.grounded) {
+      sprite = player.velocityY < 0 ? jumpSprite : fallingSprite;
+    } else if (state === "running" && player.grounded) {
+      const frameIndex = Math.floor((animationTime * 14) % playerSpriteFrames.length);
+      sprite = playerSpriteFrames[frameIndex];
+    }
 
-    context.fillStyle = "#d5fff0";
-    context.beginPath();
-    context.roundRect(13, 17, 24, 16, 7);
-    context.fill();
-    context.fillStyle = "#174b44";
-    context.beginPath();
-    context.arc(20, 24, 2.4, 0, Math.PI * 2);
-    context.arc(30, 24, 2.4, 0, Math.PI * 2);
-    context.fill();
-    context.strokeStyle = "#174b44";
-    context.lineWidth = 1.7;
-    context.beginPath();
-    context.moveTo(21, 29);
-    context.quadraticCurveTo(25, 33, 29, 29);
-    context.stroke();
+    if (sprite && sprite.complete && sprite.width > 0) {
+      const targetWidth = state === "over" ? 76 : 72;
+      const targetHeight = state === "over" ? 70 : 64;
+      context.drawImage(sprite, -9, -4, targetWidth, targetHeight);
+    } else {
+      context.fillStyle = "#173c37";
+      context.beginPath();
+      context.ellipse(24, 57, 23, 4, 0, 0, Math.PI * 2);
+      context.fill();
 
-    context.strokeStyle = "#174b44";
-    context.lineWidth = 3;
-    context.beginPath();
-    context.moveTo(25, 3);
-    context.lineTo(25, -3);
-    context.stroke();
-    context.fillStyle = "#c6f074";
-    context.beginPath();
-    context.arc(25, -5, 4, 0, Math.PI * 2);
-    context.fill();
+      context.fillStyle = "#ff795e";
+      context.beginPath();
+      context.roundRect(3, 8, 43, 43, 13);
+      context.fill();
+      context.fillStyle = "#e5ac93";
+      context.beginPath();
+      context.roundRect(8, 3, 34, 44, 13);
+      context.fill();
 
-    const step = player.grounded && state === "running" ? Math.sin(player.runTime * 9) * 5 : 0;
-    context.strokeStyle = "#173c37";
-    context.lineWidth = 5;
-    context.lineCap = "round";
-    context.beginPath();
-    context.moveTo(17, 48);
-    context.lineTo(16 - step, 55);
-    context.moveTo(33, 48);
-    context.lineTo(34 + step, 55);
-    context.stroke();
+      context.fillStyle = "#d5fff0";
+      context.beginPath();
+      context.roundRect(13, 17, 24, 16, 7);
+      context.fill();
+      context.fillStyle = "#174b44";
+      context.beginPath();
+      context.arc(20, 24, 2.4, 0, Math.PI * 2);
+      context.arc(30, 24, 2.4, 0, Math.PI * 2);
+      context.fill();
+      context.strokeStyle = "#174b44";
+      context.lineWidth = 1.7;
+      context.beginPath();
+      context.moveTo(21, 29);
+      context.quadraticCurveTo(25, 33, 29, 29);
+      context.stroke();
+
+      context.strokeStyle = "#174b44";
+      context.lineWidth = 3;
+      context.beginPath();
+      context.moveTo(25, 3);
+      context.lineTo(25, -3);
+      context.stroke();
+      context.fillStyle = "#c6f074";
+      context.beginPath();
+      context.arc(25, -5, 4, 0, Math.PI * 2);
+      context.fill();
+
+      const step = player.grounded && state === "running" ? Math.sin(player.runTime * 9) * 5 : 0;
+      context.strokeStyle = "#173c37";
+      context.lineWidth = 5;
+      context.lineCap = "round";
+      context.beginPath();
+      context.moveTo(17, 48);
+      context.lineTo(16 - step, 55);
+      context.moveTo(33, 48);
+      context.lineTo(34 + step, 55);
+      context.stroke();
+    }
     context.restore();
   }
 
