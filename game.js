@@ -20,6 +20,14 @@
   const magnetStatus = document.querySelector("#magnet-status");
   const shieldStatus = document.querySelector("#shield-status");
   const announcer = document.querySelector("#announcer");
+  const coinSound = new Audio("coin05.mp3");
+  coinSound.preload = "auto";
+  const jumpSound = new Audio("jump01.mp3");
+  jumpSound.preload = "auto";
+  const powerUpSound = new Audio("powerup03.mp3");
+  powerUpSound.preload = "auto";
+  const gameOverSound = new Audio("gameover.mp3");
+  gameOverSound.preload = "auto";
 
   const player = { x: PLAYER_X, y: GROUND_Y - 58, width: 56, height: 58, velocityY: 0, grounded: true, jumpCount: 0, runTime: 0 };
   const playerSpriteFrames = Array.from({ length: 4 }, (_, index) => {
@@ -120,6 +128,30 @@
     oscillator.stop(now + duration);
   }
 
+  function playCoinSound() {
+    coinSound.currentTime = 0;
+    const playback = coinSound.play();
+    if (playback) playback.catch((error) => console.error("Unable to play coin sound:", error));
+  }
+
+  function playJumpSound() {
+    jumpSound.currentTime = 0;
+    const playback = jumpSound.play();
+    if (playback) playback.catch((error) => console.error("Unable to play jump sound:", error));
+  }
+
+  function playPowerUpSound() {
+    powerUpSound.currentTime = 0;
+    const playback = powerUpSound.play();
+    if (playback) playback.catch((error) => console.error("Unable to play power-up sound:", error));
+  }
+
+  function playGameOverSound() {
+    gameOverSound.currentTime = 0;
+    const playback = gameOverSound.play();
+    if (playback) playback.catch((error) => console.error("Unable to play game-over sound:", error));
+  }
+
   function startGame() {
     unlockAudio();
     obstacles = [];
@@ -160,7 +192,7 @@
     buttonLabel.textContent = "再跑一次";
     overlay.classList.remove("is-hidden");
     announcer.textContent = `遊戲結束，分數 ${score}，金幣 ${coinCount}，最高分 ${bestScore}。`;
-    playTone(210, 0.3, "sawtooth", 0.035, 75);
+    playGameOverSound();
   }
 
   function formatScore(value) {
@@ -182,7 +214,7 @@
     player.jumpCount += 1;
     player.velocityY = player.jumpCount === 1 ? -710 : -650;
     player.grounded = false;
-    playTone(player.jumpCount === 1 ? 300 : 440, 0.13, "sine", 0.035, player.jumpCount === 1 ? 520 : 680);
+    playJumpSound();
   }
 
   function handleAction() {
@@ -241,14 +273,13 @@
   }
 
   function collectPowerUp(powerUp) {
+    playPowerUpSound();
     if (powerUp.type === "magnet") {
       magnetTime = 8;
-      playTone(620, 0.18, "triangle", 0.045, 980);
       announcer.textContent = "磁鐵啟動，金幣會被吸引過來。";
     } else {
       shieldCharges = 1;
       shieldInvulnerability = 0;
-      playTone(380, 0.2, "sine", 0.045, 760);
       announcer.textContent = "護盾已就緒，可抵擋一次障礙。";
     }
     for (let index = 0; index < 10; index += 1) {
@@ -284,7 +315,7 @@
       particles.push({ x: coin.x + coin.width / 2, y: coin.y + coin.height / 2, velocityX: Math.cos(angle) * (45 + Math.random() * 75), velocityY: Math.sin(angle) * (45 + Math.random() * 75) - 30, life: 0.42, maxLife: 0.42, color: index % 2 ? "#fff3a0" : "#ffb843" });
     }
     updateHud();
-    playTone(730, 0.12, "sine", 0.045, 1120);
+    playCoinSound();
   }
 
   function update(deltaTime) {
