@@ -28,6 +28,10 @@
   powerUpSound.preload = "auto";
   const gameOverSound = new Audio("gameover.mp3");
   gameOverSound.preload = "auto";
+  const backgroundMusic = new Audio("bg.mp3");
+  backgroundMusic.loop = true;
+  backgroundMusic.preload = "auto";
+  backgroundMusic.volume = 0.35;
 
   const player = { x: PLAYER_X, y: GROUND_Y - 58, width: 56, height: 58, velocityY: 0, grounded: true, jumpCount: 0, runTime: 0 };
   const playerSpriteFrames = Array.from({ length: 4 }, (_, index) => {
@@ -152,8 +156,14 @@
     if (playback) playback.catch((error) => console.error("Unable to play game-over sound:", error));
   }
 
+  function playBackgroundMusic() {
+    const playback = backgroundMusic.play();
+    if (playback) playback.catch((error) => console.error("Unable to play background music:", error));
+  }
+
   function startGame() {
     unlockAudio();
+    playBackgroundMusic();
     obstacles = [];
     coins = [];
     powerUps = [];
@@ -183,6 +193,8 @@
   function endGame() {
     if (state !== "running") return;
     state = "over";
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
     bestScore = Math.max(bestScore, score);
     saveBestScore();
     updateHud();
